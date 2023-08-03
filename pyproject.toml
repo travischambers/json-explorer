@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "json-explorer"
+version = "23.8.0"
+description = ""
+authors = ["Sam Maphey <maphey1@llnl.gov>"]
+readme = "README.md"
+packages = [{include = "json_explorer"}]
+
+[tool.poetry.dependencies]
+python = ">=3.9,<3.9.7 || >3.9.7,<4.0"
+streamlit = "^1.25.0"
+pydantic = "^2.1.1"
+bokeh = "2.4.3"
+
+
+[tool.poetry.group.dev.dependencies]
+mkdocs-material = "^9.1.21"
+bumpver = "^2023.1125"
+pre-commit = "^3.3.3"
+mike = "^1.1.2"
+black = "^23.7.0"
+pytest = "^7.4.0"
+flake8 = "^6.1.0"
+flake8-docstrings = "^1.7.0"
+flake8-print = "^5.0.0"
+mkdocs-include-markdown-plugin = "^3.2.3"
+pytkdocs = {version = "^0.16.1", extras = ["restructured-text"]}
+markdown-include = "^0.8.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

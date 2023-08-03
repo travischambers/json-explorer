@@ -1,0 +1,27 @@
+[bumpver]
+current_version = "23.8.0"
+version_pattern = "YY.MM.PATCH[-TAGNUM]"
+commit_message = "bump version to {new_version}"
+commit = true
+tag = true
+push = true
+
+[bumpver.file_patterns]
+"pyproject.toml" = [
+    'version = "{version}"',
+]
+"darc/README.md" = [
+    'Version {version}',
+]
+"bumpver.toml" = [
+    'current_version = "{version}"',
+]
+".gitlab-ci.yml" = [
+    'LIBRARY_VERSION: "{version}"',
+]
+"darc/tests/unit/test_darc.py" = [
+    'assert __version__ == "{version}"',
+]
+"darc/__init__.py" = [
+    '__version__ = "{version}"',
+]
