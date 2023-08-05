@@ -1,7 +1,8 @@
-from io import BytesIO
-import streamlit as st
 import json
+from io import BytesIO
+
 import pandas as pd
+import streamlit as st
 
 from json_explorer.analyzer import Analyzer
 from json_explorer.constants import HANDLED_TYPES

@@ -1,15 +1,16 @@
 from __future__ import annotations
+
 from abc import abstractmethod
+from collections import Counter, defaultdict
 from copy import deepcopy
 from dataclasses import dataclass, field
-from collections import defaultdict, Counter
 from math import pi
 from typing import Any, Generic, Optional, TypeVar, Union
-from bokeh.models import ColumnDataSource, PanTool, HoverTool
-from bokeh.plotting import figure, Figure
+
+from bokeh.models import ColumnDataSource, HoverTool, PanTool
+from bokeh.plotting import Figure, figure
 
 from json_explorer.constants import HANDLED_TYPES
-
 
 DataType = TypeVar("DataType")
 
