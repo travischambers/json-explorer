@@ -17,7 +17,6 @@ DataType = TypeVar("DataType")
 
 @dataclass()
 class TypeAnalyzer(Generic[DataType]):
-
     data: list[DataType]
     """
     The list of data to analyze.
@@ -41,16 +40,14 @@ class TypeAnalyzer(Generic[DataType]):
 
     def stats(self) -> str:
         """A markdown formatted representation of the collated statistics."""
-        return (
-f"""
+        return f"""
 ### {self.__class__.__name__}
 
 - Number of Entries: {len(self.original_data)}
 - Number of `null` Entries: {len(self.original_data) - len(self.data)}
 - Number of unexpected Entries: {len(self.unexpected)}
 """
-        )
-    
+
     @abstractmethod
     def chart(self, key: str) -> figure:
         """A bokeh figure which represents the data in a visualized way."""
@@ -58,26 +55,29 @@ f"""
 
 
 class StringAnalyzer(TypeAnalyzer[str]):
-
     _unique: dict[str, int] = field(default_factory=lambda: {})
     """A mapping of the string to the number of times it was found in the list."""
 
     def collate(self):
         self._unique = Counter(self.data)
         return self
-    
+
     def stats(self):
         return super().stats() + (
-f"""
+            f"""
 - Number of Unique Values: {len(self._unique)}
 """
         )
-    
+
     def chart(self, key: str) -> Figure:
         if len(self._unique) == len(self.data):
-            raise ValueError("Visual Analysis will provide no value. All values are unique.")
+            raise ValueError(
+                "Visual Analysis will provide no value. All values are unique."
+            )
         if len(self._unique) == 1:
-            raise ValueError("Visual Analysis will provide no value. Only one value to show.")
+            raise ValueError(
+                "Visual Analysis will provide no value. Only one value to show."
+            )
 
         keys = list(self._unique.keys())
         counts = list(self._unique.values())
@@ -95,14 +95,14 @@ f"""
             tooltips="@keys, @counts",
             sizing_mode="stretch_width",
         )
-        p.xaxis.major_label_orientation = pi/4
+        p.xaxis.major_label_orientation = pi / 4
 
         p.vbar(
-            x='keys',
-            top='counts',
+            x="keys",
+            top="counts",
             source=source,
             width=0.9,
-            line_color='white',
+            line_color="white",
         )
         p.add_tools(PanTool(dimensions="width"))
 
@@ -110,7 +110,6 @@ f"""
 
 
 class BooleanAnalyzer(TypeAnalyzer[bool]):
-
     true: int
     """The number of values that are true in the list."""
 
@@ -121,15 +120,15 @@ class BooleanAnalyzer(TypeAnalyzer[bool]):
         self.true = len([b for b in self.data if b])
         self.false = len([b for b in self.data if not b])
         return self
-    
+
     def stats(self):
         return super().stats() + (
-f"""
+            f"""
 - Number of True Values: {self.true}
 - Number of False Values: {self.false}
 """
         )
-    
+
     def chart(self, key: str) -> Figure:
         keys = ["true", "false"]
         source = ColumnDataSource(data=dict(keys=keys, counts=[self.true, self.false]))
@@ -141,21 +140,20 @@ f"""
             title=f"{key} Counts",
             sizing_mode="stretch_width",
         )
-        p.xaxis.major_label_orientation = pi/4
+        p.xaxis.major_label_orientation = pi / 4
 
         p.vbar(
-            x='keys',
-            top='counts',
+            x="keys",
+            top="counts",
             source=source,
             width=0.9,
-            line_color='white',
+            line_color="white",
         )
 
         return p
-    
+
 
 class NumberAnalyzer(TypeAnalyzer[Union[float, int]]):
-
     max: Union[float, int]
     min: Union[float, int]
     avg: Union[float, int]
@@ -167,12 +165,12 @@ class NumberAnalyzer(TypeAnalyzer[Union[float, int]]):
         self.min = min(self.data)
         self.avg = sum(self.data) / len(self.data)
         self.variance = sum([((x - self.avg) ** 2) for x in self.data]) / len(self.data)
-        self.std_dev = self.variance ** 0.5
+        self.std_dev = self.variance**0.5
         return self
-    
+
     def stats(self):
         return super().stats() + (
-f"""
+            f"""
 - Max Value: {self.max}
 - Min Value: {self.min}
 - Average: {self.avg:.4f}
@@ -201,7 +199,9 @@ class Analyzer:
     _field_map: dict[str, type] = field(default_factory=lambda: {})
     """The fields present on the objects mapped to their data type."""
 
-    _value_lookup: dict[type, list[str]] = field(default_factory=lambda: defaultdict(list)) 
+    _value_lookup: dict[type, list[str]] = field(
+        default_factory=lambda: defaultdict(list)
+    )
     """A reverse lookup of the types and fields which contain that type."""
 
     def analyze(self) -> Analyzer:
@@ -220,7 +220,7 @@ class Analyzer:
                     parent=self,
                 ).analyze()
         return self
-    
+
     def type_analyzer(self, path: str, type: type):
         type_dispatch = {
             str: StringAnalyzer,
@@ -238,7 +238,9 @@ class Analyzer:
             if value is not None and not isinstance(value, type):
                 unexpected.append(value)
             else:
-                collated.append(value)            
+                collated.append(value)
 
         # Collate the data
-        self.collated[path] = type_dispatch[type](data=collated, unexpected=unexpected).collate()
+        self.collated[path] = type_dispatch[type](
+            data=collated, unexpected=unexpected
+        ).collate()

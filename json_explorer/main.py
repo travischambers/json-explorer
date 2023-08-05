@@ -16,6 +16,7 @@ if not f:
 
 data = json.load(f)
 
+
 def construct_collation(analyzer: Analyzer):
     for type in HANDLED_TYPES:
         for key in analyzer._value_lookup.get(type, []):
@@ -29,6 +30,7 @@ def construct_collation(analyzer: Analyzer):
                 right.warning(f"No Chart Implemented for {type}")
             except ValueError as e:
                 right.warning(e)
+
 
 analyzer = Analyzer(data=data)
 
@@ -50,4 +52,3 @@ if st.button("Analyze JSON Data..."):
     for name, sub in analyzer.sub_analyzers.items():
         with st.expander(f"Analyzed data for `{name}` fields..."):
             construct_collation(analyzer=sub)
-
