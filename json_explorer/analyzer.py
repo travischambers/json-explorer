@@ -216,7 +216,7 @@ class Analyzer:
 
             if isinstance(value, dict) and not self.parent:
                 self.sub_analyzers[key] = Analyzer(
-                    data=[d[key] for d in self.data],
+                    data=[d[key] for d in self.data if key in d],
                     parent=self,
                 ).analyze()
         return self
